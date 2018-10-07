@@ -1,0 +1,32 @@
+#
+# Travis-CI.org configuration file
+#
+# Orchestrates the Travis build of a Docker manifest for Docker Hub.
+#   https://docs.travis-ci.com/user/docker/
+#
+
+# Setup environment for Docker builds.
+language: minimal
+sudo: required
+
+# Enable Docker experimental features, to be able to use the "manifest" command.
+addons:
+  apt:
+    packages:
+      - docker-ce
+before_install:
+  - mkdir -p ~/.docker
+  - echo '{"experimental":"enabled"}' > ~/.docker/config.json
+  - docker version
+
+# Create and test Docker manifest.
+script:
+  - ./manifest.sh -b
+  - docker run --detach --privileged --restart=unless-stopped --net=host --cap-add=NET_ADMIN --name=flic renemarc/balena-flic:latest
+  - sleep 5
+  - docker logs flic
+
+# Deploy manifest to Docker Hub.
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+  - ./manifest.sh -p

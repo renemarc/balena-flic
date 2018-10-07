@@ -1,0 +1,71 @@
+#
+# Dockerfile template for balenaCloud/openBalena using name substitution
+#
+# This file will be used instead of any default Dockerfile when using
+# openBalena or balenaCloud.
+#
+# @link https://www.balena.io/docs/learn/develop/dockerfile/#dockerfile-templates
+#
+# Based on the Home Assistant addon by @pschmitt:
+# https://github.com/pschmitt/hassio-addons/blob/master/flicd/Dockerfile
+#
+
+# Define base image (target either %%BALENA_ARCH%% or %%BALENA_MACHINE_NAME%%)
+FROM balena/%%BALENA_ARCH%%-alpine:latest
+
+# Declare build environment variables
+ENV FLICLIB_ARCH unknown
+ENV FLICLIB_VERSION 0.5
+ENV VERSION 0.5
+
+# Label image with metadata
+LABEL org.label-schema.name="balena Flic" \
+      org.label-schema.description="Flic smart button bridge for single-board computers." \
+      org.label-schema.docker.cmd="docker run --detach --restart=unless-stopped --net=host --cap-add=NET_ADMIN --name=flic renemarc/balena-flic" \
+      org.label-schema.docker.cmd.debug="docker run -it --net=host --cap-add=NET_ADMIN \$CONTAINER /bin/bash" \
+      org.label-schema.docker.cmd.help="docker run -it --rm --net=host --cap-add=NET_ADMIN renemarc/balena-flic /usr/bin/flicd --help" \
+      org.label-schema.vcs-url="https://github.com/renemarc/balena-flic" \
+      org.label-schema.url="https://flic.io/" \
+      org.label-schema.version=${VERSION} \
+      org.label-schema.schema-version="1.0"
+
+# Install requirements
+RUN case %%BALENA_ARCH%% in \
+      amd64) export FLICLIB_ARCH=x86_64 ;; \
+      i386) export FLICLIB_ARCH=i386 ;; \
+      rpi|armv7hf|aarch64) export FLICLIB_ARCH=armv6l ;; \
+    esac \
+ && apk add \
+      g++ \
+      git \
+      libc6-compat \
+      libstdc++ \
+      make \
+ && git clone --branch ${FLICLIB_VERSION} --depth 1 \
+      https://github.com/50ButtonsEach/fliclib-linux-hci /tmp/src \
+ && make --directory=/tmp/src/simpleclient \
+ && cp /tmp/src/simpleclient/simpleclient /usr/bin/ \
+ && cp /tmp/src/bin/${FLICLIB_ARCH}/flicd /usr/bin/ \
+ && chmod +x /usr/bin/flicd \
+ && apk del \
+      g++ \
+      git \
+      make \
+ && rm -rf \
+      /tmp/src
+
+# Setup application directory
+WORKDIR /data
+
+# Create a volume to store the database
+VOLUME ["/data"]
+
+# Listen to Flic service TCP port
+EXPOSE 5551
+
+# Start Flic daemon
+ENTRYPOINT ["/usr/bin/flicd"]
+CMD [ "--db-file", "/data/flic.sqlite", \
+      "--server-addr", "0.0.0.0", \
+      "--server-port", "5551" \
+    ]

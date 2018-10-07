@@ -1,0 +1,7 @@
+.*
+hooks
+manifest.sh
+*.md
+*.txt
+
+!README.md

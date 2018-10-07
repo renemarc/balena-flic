@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Docker pre_build checkout hook override
+#
+# See https://docs.docker.com/docker-cloud/builds/advanced/
+#
+
+# Optimize shell for safety.
+set -o errexit -o noclobber -o nounset -o pipefail -o xtrace
+
+# Show system information.
+{ echo "System information:"; } 2> /dev/null
+uname -a
+
+{ echo "Current Docker information:"; } 2> /dev/null
+docker version
+
+{ echo "System-wide information:"; } 2> /dev/null
+docker info
+
+#{ echo "Environmental variables:"; } 2> /dev/null
+#env
+
+# Exit with the status of the last command
+exit $?
