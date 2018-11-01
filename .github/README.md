@@ -85,7 +85,7 @@ Let's play! 😃
    ```
 2. Add your balena application as a secondary remote to the cloned repo:  
    ```sh
-   git remote add balena <username>@git.balena.io:<username>/<appname>.git
+   git remote add balena <username>@git.balena-cloud.com:<username>/<appname>.git
    ```
 3. Push the code to balenaCloud and wait for it to build and provision your device:
    ```sh
