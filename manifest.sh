@@ -42,11 +42,11 @@ while getopts ":hbp" opt; do
       DOCKER_PUSH=true
       ;;
     \?)
-      printf "Invalid option: -$OPTARG\nSee ${0##*/} -h for usage info.\n" >&2
+      printf "Invalid option: -%s\nSee ${0##*/} -h for usage info.\n" "$OPTARG">&2
       ;;
   esac
 done
-if (( $OPTIND == 1 )); then
+if (( $# == 0 )); then
   show_help >&2
   exit 1
 fi

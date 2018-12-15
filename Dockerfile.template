@@ -16,7 +16,7 @@ FROM balenalib/%%BALENA_ARCH%%-alpine:latest
 # Declare build environment variables
 ENV FLICLIB_ARCH unknown
 ENV FLICLIB_VERSION 0.5
-ENV VERSION 0.5.1
+ENV VERSION 0.5.2
 
 # Label image with metadata
 LABEL org.label-schema.name="balena Flic" \

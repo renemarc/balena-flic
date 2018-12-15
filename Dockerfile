@@ -17,7 +17,7 @@ FROM balenalib/rpi-alpine:latest
 # Declare build environment variables
 ENV FLICLIB_ARCH armv6l
 ENV FLICLIB_VERSION 0.5
-ENV VERSION 0.5.1
+ENV VERSION 0.5.2
 
 # Define build arguments
 ARG BUILD_DATE
