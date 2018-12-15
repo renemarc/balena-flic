@@ -18,10 +18,10 @@ fi
 # Build Docker image.
 { echo "Build Docker image:"; } 2> /dev/null
 docker build \
-	--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
-	--build-arg VCS_REF=`git rev-parse --short HEAD` \
-	--tag $IMAGE_NAME \
-	--file $DOCKERFILE \
+	--build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+	--build-arg VCS_REF="$(git rev-parse --short HEAD)" \
+	--tag "$IMAGE_NAME" \
+	--file "$DOCKERFILE" \
 	.
 
 # Exit with the status of the last command

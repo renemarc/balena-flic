@@ -2,6 +2,7 @@
 hooks
 manifest.sh
 *.md
+*.rb
 *.txt
 
 !README.md
