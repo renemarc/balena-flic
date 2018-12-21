@@ -16,31 +16,32 @@ Run the following commands on your linux-running host:
 
 ### Start the daemon
 
-```sh
+```shell
 docker run --detach --restart=unless-stopped \
-    --net=host --cap-add=NET_ADMIN --name=flic \
+    --net=host --cap-add=NET_ADMIN \
+    --name=flic \
     renemarc/balena-flic
 ```
 
 ### Explore the above container
 
-```sh
+```shell
 docker logs flic
 ```
 
-```sh
-docker exec -it flic /bin/bash
+```shell
+docker exec -it flic bash
 ```
 
 ### Play with a temporary container
 
-```sh
+```shell
 docker kill flic
 ```
 
-```sh
+```shell
 docker run -it --rm --net=host --cap-add=NET_ADMIN \
-    renemarc/balena-flic /bin/bash
+    renemarc/balena-flic bash
 ```
 
 [See complete usage instructions on GitHub](https://github.com/renemarc/balena-flic). 👀
@@ -53,7 +54,7 @@ docker run -it --rm --net=host --cap-add=NET_ADMIN \
 
 The **latest** tag is a [multi-platform aware manifest list](https://blog.docker.com/2017/09/docker-official-images-now-multi-platform/), and is [created/updated on Travis CI](https://travis-ci.org/renemarc/balena-flic) using [this shell script](https://github.com/renemarc/balena-flic/blob/master/manifest.sh).
 
-[Architecture-specific tags](https://hub.docker.com/r/renemarc/balena-flic/tags/) are automated builds, with their base images swapped at build-time using a [post_checkout Docker hook](https://github.com/renemarc/balena-flic/blob/master/hooks/post_checkout).
+[Architecture-specific tags](https://hub.docker.com/r/renemarc/balena-flic/tags/) are automated builds, with their base images defined at build-time using a [Docker build hook](https://github.com/renemarc/balena-flic/blob/master/hooks/build).
 
 ## Automated build pipeline 🏗
 

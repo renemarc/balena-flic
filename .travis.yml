@@ -22,7 +22,7 @@ before_install:
 # Create and test Docker manifest.
 script:
   - ./manifest.sh -b
-  - docker run --detach --privileged --restart=unless-stopped --net=host --cap-add=NET_ADMIN --name=flic renemarc/balena-flic:latest
+  - docker run --detach --restart=unless-stopped --net=host --cap-add=NET_ADMIN --name=flic renemarc/balena-flic:latest
   - sleep 5
   - docker logs flic
 

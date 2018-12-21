@@ -1,4 +1,14 @@
+#
+# Code Climate Quality configuration file
+#
+# Helps keep code and documentation clean.
+#
+# @link https://docs.codeclimate.com/
+#
+
 version: 2
+
+# Enable community plugins
 plugins:
   fixme:
     enabled: true
@@ -8,5 +18,3 @@ plugins:
     enabled: true
   shellcheck:
     enabled: true
-exclude_patterns:
-- "markdownlint.rb"

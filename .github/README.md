@@ -16,8 +16,8 @@ Turn a [Raspberry Pi](https://www.raspberrypi.org/) or many single-board compute
 
 Useful if your Flic buttons are located too far from your home automation hub, or if you need to use your hub's bluetooth antenna for something else.
 
-- [balena Dockerfile](#dockerfiles-) for ARM architecture based on [Alpine Linux](https://alpinelinux.org/about/) that weighs less than 30 MiB on a Raspberry Pi. ⚖️
-- [Regular Dockerfiles](#dockerfiles-) are available for traditional Docker stacks. 🐳
+- [balena Dockerfile](#balena-) for ARM architecture based on [Alpine Linux](https://alpinelinux.org/about/) that weighs less than 40 MiB on a Raspberry Pi. ⚖️
+- [Regular Dockerfiles](#docker-) are available for traditional Docker stacks. 🐳
 - Pre-built Docker images with multi-platform support [are automatically kept updated on Docker Hub](https://hub.docker.com/r/renemarc/balena-flic): ARM ones are Alpine-based while x86 ones are using Debian.
 
 <div align="center">
@@ -41,35 +41,45 @@ Of course you _could_ do all of this on your own, but do you _really_ want to mi
 ## Table of contents 📑
 
 1. [Prerequisites](#prerequisites-)
-2. [Installation](#installation-)
-3. [Pairing](#pairing-)
-4. [Unpairing](#unpairing-)
-5. [Dockerfiles](#dockerfiles-)
-6. [Alternatives](#alternatives-)
-7. [Contributing](#contributing-)
-8. [Thanks](#thanks-)
+2. [balena](#balena-)
+    1. [Preparation](#preparation-)
+    2. [Installation](#installation-)
+    3. [Pairing](#pairing-)
+    4. [Unpairing](#unpairing-)
+3. [Docker](#docker-)
+    1. [Hub images](#hub-images-)
+    2. [Build and run](#build-and-run-)
+4. [Alternatives](#alternatives-)
+5. [Contributing](#contributing-)
+6. [Thanks](#thanks-)
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
 ## Prerequisites ✅
 
 1. At least one [Flic smart button](https://flic.io/).
-2. Your favourite [Internet of Things](https://en.wikipedia.org/wiki/Internet_of_things) (IoT) device that offers both Bluetooth Low Energy and network access, like the inexpensive [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/).
+2. Your favourite [Internet of Things](https://en.wikipedia.org/wiki/Internet_of_things) (IoT) device that offers both Bluetooth Low Energy (BLE) and network access, like the inexpensive [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/).
 3. Working access to an MQTT broker, either [a public one](https://github.com/mqtt/mqtt.github.io/wiki/public_brokers), your own hosted [Mosquitto](https://mosquitto.org/) instance or [the Home Assistant addon](https://www.home-assistant.io/addons/mosquitto/).
-4. [A free-tier account](https://dashboard.balena-cloud.com/signup) on [balenaCloud](https://balena-cloud.com/) along with [a properly set SSH public key](https://www.balena.io/docs/learn/getting-started/raspberrypi3/nodejs/#adding-an-ssh-key) into your account.
+4. (Recommended) [A free-tier account](https://dashboard.balena-cloud.com/signup) on [balenaCloud](https://balena-cloud.com/) along with [a properly set SSH public key](https://www.balena.io/docs/learn/getting-started/raspberrypi3/nodejs/#adding-an-ssh-key) into your account.
 5. (Recommended) [The balena command-line tools](https://www.balena.io/docs/reference/cli/). Do read up on their [friendly development guidelines](https://www.balena.io/docs/learn/develop/local-mode/).
 
 Let's play! 🤠
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-## Preparation 🍔
+## balena 📦
 
-1. [Create a new application](https://dashboard.balena-cloud.com/login) on balenaCloud dashboard and select the appropriate IoT hardware.
+Follow these simple steps to quickly get your app running on a dedicated device using balenaCloud. If you want more control, [try the Docker solution instead](#docker-).
+
+For reference, the balena framework will build the container using the [`./Dockerfile.template`](../Dockerfile.template) which employs placeholders so that the correct system architecture is picked for you during installation. Easy! 😃
+
+### Preparation 🍔
+
+1. [Create a new application](https://dashboard.balena-cloud.com/) on balenaCloud dashboard and select the appropriate IoT hardware.
 2. Add a new device to your app. Start with _development mode_ for local testing, or go directly for _production mode_ if you know what you're doing.
-3. (Optionally) Configure the downloaded image to give your device a custom hostname instead of the generic `balena`:
+3. (Optionally) Configure the downloaded image to give your device a custom hostname instead of the generic **balena**:
 
-   ```sh
+   ```shell
    sudo balena local configure /path/to/downloaded/image.img
    ```
 
@@ -79,23 +89,23 @@ Your hardware is ready; it's now time to [install the project! ⬇️](@installa
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-## Installation 💻
+### Installation 💻
 
 1. Git clone this project's repository:
 
-   ```sh
+   ```shell
    git clone git@github.com:renemarc/balena-flic.git
    ```
 
 2. Add your balena application as a secondary remote to the cloned repo:
 
-   ```sh
+   ```shell
    git remote add balena <username>@git.balena-cloud.com:<username>/<appname>.git
    ```
 
 3. Push the code to balenaCloud and wait for it to build and provision your device:
 
-   ```sh
+   ```shell
    git push balena master
    ```
 
@@ -103,13 +113,13 @@ Great! You are now ready to [pair your button. ⬇️](#pairing-)
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-## Pairing 💑
+### Pairing 💑
 
 Since only one controller can be paired at a time, do make sure that your Flic button is unpaired from your mobile device by using the Flic mobile app to remove the button from its interface.
 
-### The easy way: Automatic pairing 🤖
+#### The easy way: Automatic pairing 🤖
 
-Configure your Home Assistant (or other automation system) by pointing it to your device, say `flic.local` or `192.168.0.4`, reload your configuration/restart the system, and [let its auto-discovery system locate your button](https://www.home-assistant.io/components/discovery/) by pressing it for 7 seconds.
+Configure your Home Assistant (or other automation system) by pointing it to your device, say **flic.local** or **192.168.0.4**, reload your configuration/restart the system, and [let its auto-discovery system locate your button](https://www.home-assistant.io/components/discovery/) by pressing it for 7 seconds.
 
 ```yaml
 # Example Home Assistant configuration.yaml entry
@@ -133,23 +143,23 @@ binary_sensor:
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-### The harder way: Manual pairing 🔩
+#### The harder way: Manual pairing 🔩
 
-Use this manual approach to [pair your button](https://medium.com/@vaughan.stedman/flic-beyond-the-phone-home-assistant-on-the-raspberry-pi-9095d6b782bf@f739) if your home automation solution requires a more hands-on configuration.
+Use this manual approach to [pair your button](https://medium.com/@vaughan.stedman/flic-beyond-the-phone-home-assistant-on-the-raspberry-pi-9095d6b782bf) if your home automation solution requires a more hands-on configuration.
 
 1. SSH into your device's main container or use the balenaCloud dashboard terminal by starting the configuration tool:
 
-   ```sh
+   ```shell
    simpleclient localhost
    ```
 
-2. Start the manual pairing procedure by issuing the following command to `simpleclient` and pressing on your Flic button for 7 seconds (or until something positive comes up on screen).
+2. Start the manual pairing procedure by issuing the following command to **simpleclient** and pressing on your Flic button for 7 seconds (or until something positive comes up on screen).
 
-   ```sh
+   ```shell
    startScanWizard
    ```
 
-3. Take note of the MAC address shown to help you differentiate your various Flic buttons, then quit `simpleclient` by using `CTRL+C` then you are done.
+3. Take note of the MAC address shown to help you differentiate your various Flic buttons, then quit **simpleclient** by using `CTRL+C` then you are done.
 4. Restart your home automation hub to have the changes be recognized.
 
 <div align="center">
@@ -165,29 +175,29 @@ Use this manual approach to [pair your button](https://medium.com/@vaughan.stedm
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-## Unpairing 💔
+### Unpairing 💔
 
-All buttons paired to your bridge have their configuration stored in the SQLite database found at `/data/flic.sqlite`. To [unpair a button](https://github.com/49ButtonsEach/fliclib-linux-hci/issues/47) requires those entries to be removed and the changes be recognized.
+All buttons paired to your bridge have their configuration stored in the SQLite database found at `/data/flic.sqlite`. To [unpair a button](https://github.com/50ButtonsEach/fliclib-linux-hci/issues/47) requires those entries to be removed and the changes be recognized.
 
-### Unpairing gracefully 🤝
+#### Unpairing gracefully 🤝
 
 **Note: this method isn't currently working.** Bummer. [Use the manual approach below instead](#unpairing-manually-️).
 
 1. SSH into your device's main container or use the balenaCloud dashboard terminal and start the configuration tool:
 
-   ```sh
+   ```shell
    simpleclient localhost
    ```
 
 2. List verified buttons:
 
-   ```sh
+   ```shell
    getInfo
    ```
 
 3. Remove the unwanted button from the verified list, using its MAC address:
 
-   ```sh
+   ```shell
    removeButton 80:e4:da:XX:XX:XX
    ```
 
@@ -195,19 +205,19 @@ All buttons paired to your bridge have their configuration stored in the SQLite 
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-### Unpairing manually 🖐️
+#### Unpairing manually 🖐️
 
 Don't mind getting your hands a bit dirty? Dive in!
 
 1. SSH into your device's main container or use the balenaCloud dashboard terminal and install SQLite:
 
-   ```sh
+   ```shell
    apk add sqlite
    ```
 
 2. Open the database:
 
-   ```sh
+   ```shell
    sqlite3 /data/flic.sqlite
    ```
 
@@ -223,7 +233,7 @@ Don't mind getting your hands a bit dirty? Dive in!
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-### Unpairing forcefully 💪
+#### Unpairing forcefully 💪
 
 Patience, you must have. Use the Force, my young Padawan. ✨
 
@@ -234,23 +244,42 @@ Patience, you must have. Use the Force, my young Padawan. ✨
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
-## Dockerfiles 🐳
+## Docker 🐳
 
-Which [Dockerfile](https://docs.docker.com/engine/reference/builder/) to use? balenaCloud will pick [`Dockerfile.template`](../Dockerfile.template) for you. Easy!
+Want more control or wish to run this container on some multi-purpose shared hardware? Here are some useful steps.
 
-### [`⚙️ Dockerfile.template`](../Dockerfile.template)
+<figure>
+    <div align="center">
+        <img src="https://media.giphy.com/media/6AFldi5xJQYIo/giphy.gif" alt="Containers being moved in a yard">
+    </div>
+</figure>
 
-balenaCloud will automatically use this one, which employs placeholders so that the correct system architecture is selected at build time. It should work on ARM systems only.
+### Hub images 🖼
 
-### [`⚙️ Dockerfile`](../Dockerfile)
+The project has [automated builds available on Docker Hub](https://hub.docker.com/r/renemarc/balena-flic), along with a multi-platform manifest to automatically download the appropriate image based on the detected architecture.
 
-Should you want to build your own Docker image, this default Dockerfile for [ARM architecture](https://en.wikipedia.org/wiki/ARM_architecture) will build one for Raspberry Pi. If you use some other hardware, just change the `FROM balenalib/raspberry-pi-` part with [any other supported base images](https://www.balena.io/docs/reference/base-images/base-images/). This file supports [QEMU virtualization](https://en.wikipedia.org/wiki/QEMU) so that [ARM architecture](https://en.wikipedia.org/wiki/ARM_architecture) images can be built on non-ARM hardware.
+1. Run the Docker image as an auto-starting container:
 
-Docker Hub uses this image to create automated builds; the file is automatically modified to support different architectures thanks to the [`hooks/post_checkout`](../hooks/post_checkout) Docker hook.
+   ```shell
+   docker run --detach --restart=unless-stopped \
+     --net=host --cap-add=NET_ADMIN \
+     --name=flic \
+     renemarc/balena-flic
+   ```
 
-### [`⚙️ Dockerfile-debian.Dockerfile`](../Dockerfile-debian.Dockerfile)
+2. Explore the container:
 
-Same as [`Dockerfile`](../Dockerfile) above, but meant to support the [x86_64 architecture](https://en.wikipedia.org/wiki/X86-64), as well as [i386](https://en.wikipedia.org/wiki/i386) through the same `post_checkout` Docker hook. The word Dockerfile is repeated for aestetic reasons: this groups Dockerfiles together and enables code highlighting.
+   ```shell
+   docker logs flic
+   ```
+
+   ```shell
+   docker exec -it flic bash
+   ```
+
+3. Proceed to the [pairing steps above. ⬆️](#pairing-)
+
+[See additional image instructions on Docker Hub](https://hub.docker.com/r/renemarc/balena-flic#usage-instructions-). 👀
 
 <div align="center">
     <figure>
@@ -263,6 +292,73 @@ Same as [`Dockerfile`](../Dockerfile) above, but meant to support the [x86_64 ar
         </figcaption>
     </figure>
 </div>
+
+<p align="right"><a href="#top" title="Back to top">🔝</a></p>
+
+### Build and run 🏗
+
+If you prefer more control, you sure can build your own images.
+
+Compared to the [balena solution](#balena-), here there are two possible Dockerfiles:
+
+- [`./Dockerfile`](../Dockerfile): Alpine-based version, used for [ARM architectures](https://en.wikipedia.org/wiki/ARM_architecture). This file supports [QEMU virtualization](https://en.wikipedia.org/wiki/QEMU) so that ARM images can be built on non-ARM hardware.
+
+  Docker Hub uses this file to create automated builds; different architectures are supported through arguments in to the [`./hooks/build`](../hooks/build) Docker hook.
+- [`./Dockerfile-debian.Dockerfile`](../Dockerfile-debian.Dockerfile): A Debian-based version, meant to support the [x86_64 architecture](https://en.wikipedia.org/wiki/X86-64) as well as [i386](https://en.wikipedia.org/wiki/i386) through the same Docker **build** hook.
+
+<p align="right"><a href="#top" title="Back to top">🔝</a></p>
+
+#### Build 👷
+
+1. Fork or clone this project's repository.
+2. Build the image:
+
+   For a Raspberry Pi or Zero:
+
+   ```shell
+   docker build --tag=flic .
+   ```
+
+   For everything else, specify the **ARCH_NAME** argument with the relevant lowercase architecture name [from balena base images](https://www.balena.io/docs/reference/base-images/base-images/).
+
+   For a Raspberry Pi 3 for instance:
+
+   ```shell
+   docker build --build-arg ARCH_NAME=armv7hf \
+     --tag=flic .
+   ```
+
+   To run Debian on an Intel NUC:
+
+   ```shell
+   docker build --build-arg ARCH_NAME=amd64 \
+     --file Dockerfile-debian \
+     --tag=flic .
+   ```
+
+3. Run the project as an auto-starting container:
+
+   ```shell
+   docker run --detach --restart=unless-stopped \
+     --net=host --cap-add=NET_ADMIN \
+     --name=flic \
+     flic
+   ```
+
+   `--net=host` gives the container access to the host's network devices, including Bluetooth.\
+   `--cap-add=NET_ADMIN` gives the container network privileges.
+
+4. Perform the [pairing steps above ⬆️](#pairing-) while inside the container:
+
+   ```shell
+   docker exec -it flic bash
+   ```
+
+<figure>
+    <div align="center">
+        <img src="https://media.makeameme.org/created/containers-containers-everywhere.jpg" alt="Buzz Lightyear saying Containers everywhere!" width="400">
+    </div>
+</figure>
 
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
