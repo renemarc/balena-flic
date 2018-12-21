@@ -12,7 +12,17 @@ set -o errexit -o noclobber -o nounset -o pipefail -o xtrace
 { echo "Determine which Dockerfile to use:"; } 2> /dev/null
 DOCKERFILE="Dockerfile"
 if [[ "$DOCKER_TAG" =~ ^(amd64|i386)$ ]]; then
-    DOCKERFILE="Dockerfile-debian.Dockerfile"
+    DOCKERFILE="Dockerfile-debian"
+fi
+
+# Define arguments
+ARCH_NAME=""
+FLICLIB_ARCH=""
+if [[ "$DOCKER_TAG" =~ ^(aarch64|amd64|armv7hf|i386|rpi)$ ]]; then
+    ARCH_NAME="--build-arg ARCH_NAME=$DOCKER_TAG"
+fi
+if [[ "$DOCKER_TAG" =~ ^(i386)$ ]]; then
+    FLICLIB_ARCH="--build-arg FLICLIB_ARCH=$DOCKER_TAG"
 fi
 
 # Build Docker image.
@@ -20,6 +30,8 @@ fi
 docker build \
 	--build-arg BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
 	--build-arg VCS_REF="$(git rev-parse --short HEAD)" \
+	"$ARCH_NAME" \
+	"$FLICLIB_ARCH" \
 	--tag "$IMAGE_NAME" \
 	--file "$DOCKERFILE" \
 	.

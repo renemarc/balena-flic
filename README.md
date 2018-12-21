@@ -16,31 +16,32 @@ Run the following commands on your linux-running host:
 
 ### Start the daemon
 
-```sh
+```shell
 docker run --detach --restart=unless-stopped \
-    --net=host --cap-add=NET_ADMIN --name=flic \
+    --net=host --cap-add=NET_ADMIN \
+    --name=flic \
     renemarc/balena-flic
 ```
 
 ### Explore the above container
 
-```sh
+```shell
 docker logs flic
 ```
 
-```sh
-docker exec -it flic /bin/bash
+```shell
+docker exec -it flic bash
 ```
 
 ### Play with a temporary container
 
-```sh
+```shell
 docker kill flic
 ```
 
-```sh
+```shell
 docker run -it --rm --net=host --cap-add=NET_ADMIN \
-    renemarc/balena-flic /bin/bash
+    renemarc/balena-flic bash
 ```
 
 [See complete usage instructions on GitHub](https://github.com/renemarc/balena-flic). 👀
