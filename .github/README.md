@@ -394,6 +394,8 @@ Want to suggest some Docker improvements? Got some fringe hardware that you used
 
 This Docker container is based on the [Hass.io addon](https://github.com/pschmitt/hassio-addons/blob/master/flicd/Dockerfile) by Philipp Schmitt ([**@pschmitt**](https://github.com/pschmitt)) and uses the official [Flic SDK](https://github.com/50ButtonsEach/fliclib-linux-hci) by [Shortcut Labs](https://flic.io/) ([**@50ButtonsEach**](https://github.com/50ButtonsEach/)).
 
+Copyright © 2018, René-Marc Simard. Project released under [Apache Licence 2.0](./LICENSE); [extra notices available](./NOTICE).
+
 <p align="right"><a href="#top" title="Back to top">🔝</a></p>
 
 <p align="center"><strong>Don't forget to <a href="#" title="star">⭐️</a> this repo! 😃<br/><sub>Assembled with <b title="love">❤️</b> in Montréal.</sub></strong></p>

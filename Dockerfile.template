@@ -4,10 +4,14 @@
 # This file will be used instead of any default Dockerfile when using
 # openBalena or balenaCloud.
 #
-# @link https://www.balena.io/docs/learn/develop/dockerfile/#dockerfile-templates
+# balena templates reference:
+#   https://www.balena.io/docs/learn/develop/dockerfile/#dockerfile-templates
 #
 # Based on the Home Assistant addon by @pschmitt:
-# https://github.com/pschmitt/hassio-addons/blob/master/flicd/Dockerfile
+#   https://github.com/pschmitt/hassio-addons/blob/master/flicd/Dockerfile
+#
+# Copyright (c) 2018 René-Marc Simard
+# SPDX-License-Identifier: Apache-2.0
 #
 
 # Declare pre-build variables
@@ -23,12 +27,16 @@ ARG FLICLIB_VERSION=0.5
 ARG VERSION=0.5.3
 
 # Label image with metadata
-LABEL org.label-schema.description="Flic smart button bridge for single-board computers." \
-      org.label-schema.name="balena Flic" \
-      org.label-schema.url="https://flic.io/" \
-      org.label-schema.vcs-url="https://github.com/renemarc/balena-flic" \
-      org.label-schema.version=${VERSION} \
-      org.label-schema.schema-version="1.0"
+LABEL maintainer="René-Marc Simard @renemarc" \
+      org.opencontainers.image.authors="René-Marc Simard @renemarc" \
+      org.opencontainers.image.description="Flic smart button bridge for single-board computers." \
+      org.opencontainers.image.documentation="https://github.com/renemarc/balena-flic" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.source="git@github.com:renemarc/balena-flic" \
+      org.opencontainers.image.title="balena Flic" \
+      org.opencontainers.image.url="https://flic.io/" \
+      org.opencontainers.image.vendor="René-Marc Simard" \
+      org.opencontainers.image.version="${VERSION}"
 
 # Install requirements
 RUN case ${ARCH_NAME} in \

@@ -2,7 +2,8 @@
 #
 # Docker pre_build checkout hook override
 #
-# See https://docs.docker.com/docker-cloud/builds/advanced/
+# Docker hooks reference:
+#   https://docs.docker.com/docker-cloud/builds/advanced/
 #
 
 # Optimize shell for safety.

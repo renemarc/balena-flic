@@ -5,10 +5,13 @@
 # balenaEngine/Docker builds or Docker Hub.
 #
 # Based on the Home Assistant addon by @pschmitt:
-# https://github.com/pschmitt/hassio-addons/blob/master/flicd/Dockerfile
+#   https://github.com/pschmitt/hassio-addons/blob/master/flicd/Dockerfile
 #
 # Available base images:
-# https://www.balena.io/docs/reference/base-images/base-images/
+#   https://www.balena.io/docs/reference/base-images/base-images/
+#
+# Copyright (c) 2018 René-Marc Simard
+# SPDX-License-Identifier: Apache-2.0
 #
 
 # Declare pre-build variables
@@ -26,16 +29,21 @@ ARG VCS_REF=0000000
 ARG VERSION=0.5.3
 
 # Label image with metadata
-LABEL org.label-schema.build-date=${BUILD_DATE} \
-      org.label-schema.description="Flic smart button bridge for single-board computers." \
+LABEL maintainer="René-Marc Simard @renemarc" \
+      org.opencontainers.image.authors="René-Marc Simard @renemarc" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.description="Flic smart button bridge for single-board computers." \
+      org.opencontainers.image.documentation="https://github.com/renemarc/balena-flic" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.source="git@github.com:renemarc/balena-flic" \
+      org.opencontainers.image.title="balena Flic" \
+      org.opencontainers.image.url="https://flic.io/" \
+      org.opencontainers.image.vendor="René-Marc Simard" \
+      org.opencontainers.image.version="${VERSION}" \
       org.label-schema.docker.cmd="docker run --detach --restart=unless-stopped --net=host --cap-add=NET_ADMIN --name=flic renemarc/balena-flic" \
       org.label-schema.docker.cmd.debug="docker run -it --net=host --cap-add=NET_ADMIN flic bash" \
       org.label-schema.docker.cmd.help="docker run -it --rm --net=host --cap-add=NET_ADMIN renemarc/balena-flic flicd --help" \
-      org.label-schema.name="balena Flic" \
-      org.label-schema.url="https://flic.io/" \
-      org.label-schema.vcs-ref=${VCS_REF} \
-      org.label-schema.vcs-url="https://github.com/renemarc/balena-flic" \
-      org.label-schema.version=${VERSION} \
       org.label-schema.schema-version="1.0"
 
 # Install requirements
